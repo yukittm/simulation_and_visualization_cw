@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+    <head>
+        <meta charset="utf-8">
+        <title>COVID-19 Comfirmed Global</title>
+        <script src="https://d3js.org/d3.v4.js"></script>
+    </head>
+    <body>
+        <p>Confirmed COVID-19 cases over time (from 12/31 to 04/03)</p>
+        <select id="country"></select>
+        <div id="graph"></div>
+        <script>
+        var margin = {top: 10, right: 50, bottom: 30, left: 50};
+        var width = 1000;
+        var height = 500;
+
+        var svg = d3.select("#graph")
+            .append("svg")
+            .attr("width", width + margin.left + margin.right)
+            .attr("height", height + margin.top + margin.bottom)
+            .append("g")
+            .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+        d3.csv("https://raw.githubusercontent.com/yukittm/simulation_and_visualization_cw/master/corona_cases.csv", function(data) {
+            var countries = ["China", "Italy", "Japan", "UK"]
+
+            // Button
+            d3.selectAll("#country")
+                .selectAll('all')
+                .data(countries)
+                .enter()
+            	.append('option')
+                .text(function (d) { return d; })
+                .attr("value", function (d) { return d; })
+
+            // X axis
+            var x = d3.scaleLinear()
+              .domain([0,95])
+              .range([ 0, width ]);
+
+            svg.append("g")
+              .attr("transform", "translate(0," + height + ")")
+              .call(d3.axisBottom(x));
+
+            // Y axis
+            var y = d3.scaleLinear()
+              .domain( [0,120000])
+              .range([ height, 0 ]);
+
+            svg.append("g")
+              .call(d3.axisLeft(y));
+
+            var myColor = d3.scaleOrdinal()
+                .domain(countries)
+                .range(d3.schemeSet1);
+
+            var line = svg.append('g')
+                .append("path")
+                .datum(data)
+                .attr("d", d3.line()
+                  .x(function(d) { return x(+d.time) })
+                  .y(function(d) { return y(+d.China) })
+                )
+                .attr("stroke", function(d){ return myColor("valueA") })
+                .style("stroke-width", 4)
+                .style("fill", "none")
+
+            function update(group) {
+              var dataFilter = data.map(function(d){return {time: d.time, number:d[group]} })
+
+              line.datum(dataFilter)
+                  .transition()
+                  .duration(1000)
+                  .attr("d", d3.line()
+                    .x(function(d) { return x(+d.time) })
+                    .y(function(d) { return y(+d.number) })
+                  )
+                  .attr("stroke", function(d){ return myColor(group) })
+            }
+
+            d3.select("#country").on("change", function(d) {
+                var selectedOption = d3.select(this).property("value")
+                update(selectedOption)
+            })
+        })
+        </script>
+        <script src="https://d3js.org/d3-scale-chromatic.v1.min.js"></script>
+    </body>
+</html>
