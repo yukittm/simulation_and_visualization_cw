@@ -5,9 +5,64 @@
         <script src="https://d3js.org/d3.v4.js"></script>
     </head>
     <body>
-        <p>Confirmed COVID-19 cases over time (from 12/31 to 04/03)</p>
-        <select id="country"></select>
+        <h1>Confirmed COVID-19 cases over time (from 12/31 to 04/03)</h1>
+        <p>K1818715 Yuki Tatsumi</p>
+        <p>I have to apologize that I made completely different thing from the report I submitted for coursework 1.
+        I know this is an excuse, but there are two reasons that I want to claim. <br>
+        Firstly, I needed quite a long time to settle down against this coronavirus situation, and couldn't allocate
+        much time for this assignment. I went back to my country and spent the quarantine in a hotel without a free wifi.
+        I wasn't able to work for any assignments during then. However I question why the deadline is not being revised
+        for this module, despite all the other assignments are pushed back from two to three weeks. I feel doubtful about
+        the lecturer not taking these conditions into consideration where many students are obviously suffering. <br>
+        Secondly, I had some kind of an environmental issue. I was planning to plot crime locations on the map, but I
+        couldn't project the map. I spent almost fully two days dealing with this, but I couldn't figure out what the problem is.
+        I even downloaded some sample codes from the Internet and run them, but the map didn't show up. Therefore I decided to
+        change what to do. <br>
+
+        I appreciate if you could consider these circumstances.</p>
+
+        <h2>Introduction</h2>
+        <p>Coronavirus is hitting our society.
+        Starting in late 2019 in Wuhan, China, coronavirus started to spread. Total number of infected people
+        has surpassed 1 million worldwide on April 3rd, and the number continues to grow exponentially.
+        All the countries are now scrambling to cope with this crisis. However, interestingly, the number of infection
+        are shifting differently among each country, depending on their culture and government's policy.
+        </p>
+
+        <select class="country"></select>
         <div id="graph"></div>
+
+        <h2>Results, Discussions</h2>
+        <ul>
+            <li>Visualized the transitions of the positive cases of coronavirus.</li>
+            <li>China had successfully reduced the increase of infectors after 50 days.</li>
+            <li>The number of positive cases in Italy had already exceeded that of China.</li>
+            <li>Cases in Japan is growing slowly compared to other countries.</li>
+            <li>UK might follow a similar path to Italy with 2 weeks of gap.</li>
+        </ul>
+
+        <h2>Conclusion</h2>
+        <ul>
+            <li>Plotted the shift of positive coronavirus cases by country.</li>
+            <li>Could have been better to plot more than one graphs to make them comparable instead of plotting single graph for interaction.</li>
+            <li>Could have plotted some of the major government policy in the graph. (didn't have enough time to do research)</li>
+        </ul>
+        <br>
+
+        <h2>Resources</h2>
+        <h3>CSV Data</h3>
+        <a href="https://ourworldindata.org/coronavirus-source-data">https://ourworldindata.org/coronavirus-source-data</a>
+
+        <h3>d3.js</h3>
+        <p>Making a Line Chart in D3.js v5</p>
+        <a href="http://datawanderings.com/2019/10/28/tutorial-making-a-line-chart-in-d3-js-v-5/">http://datawanderings.com/2019/10/28/tutorial-making-a-line-chart-in-d3-js-v-5/</a>
+        <p>Line plot with dropdown to select group in d3.js</p>
+        <a href="https://www.d3-graph-gallery.com/graph/line_select.html">https://www.d3-graph-gallery.com/graph/line_select.html</a>
+        <p>d3.js v5 line chart with dates</p>
+        <a href="https://bl.ocks.org/GerardoFurtado/71a700b656a69b45fd2037e38180254a">https://bl.ocks.org/GerardoFurtado/71a700b656a69b45fd2037e38180254a</a>
+        <p>Simple Line Graph v4</p>
+        <a href="https://bl.ocks.org/d3noob/402dd382a51a4f6eea487f9a35566de0">https://bl.ocks.org/d3noob/402dd382a51a4f6eea487f9a35566de0</a>
+
         <script>
         var margin = {top: 10, right: 50, bottom: 30, left: 50};
         var width = 1000;
@@ -24,7 +79,7 @@
             var countries = ["China", "Italy", "Japan", "UK"]
 
             // Button
-            d3.selectAll("#country")
+            d3.selectAll(".country")
                 .selectAll('all')
                 .data(countries)
                 .enter()
@@ -60,12 +115,12 @@
                   .x(function(d) { return x(+d.time) })
                   .y(function(d) { return y(+d.China) })
                 )
-                .attr("stroke", function(d){ return myColor("valueA") })
-                .style("stroke-width", 4)
+                .attr("stroke", function(d){ return myColor("China") })
+                .style("stroke-width", 5)
                 .style("fill", "none")
 
-            function update(group) {
-              var dataFilter = data.map(function(d){return {time: d.time, number:d[group]} })
+            function update(country) {
+              var dataFilter = data.map(function(d){return {time: d.time, number:d[country]} })
 
               line.datum(dataFilter)
                   .transition()
@@ -74,10 +129,10 @@
                     .x(function(d) { return x(+d.time) })
                     .y(function(d) { return y(+d.number) })
                   )
-                  .attr("stroke", function(d){ return myColor(group) })
+                  .attr("stroke", function(d){ return myColor(country) })
             }
 
-            d3.select("#country").on("change", function(d) {
+            d3.select(".country").on("change", function(d) {
                 var selectedOption = d3.select(this).property("value")
                 update(selectedOption)
             })
